@@ -60,8 +60,7 @@ class ContactController extends Controller
                 'message' => 'This is not your data'
             ],403);
         }
-
-
+        
         return response()->json([
             'message' => 'success',
             $contact],200);
