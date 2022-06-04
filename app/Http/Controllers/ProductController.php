@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
+use App\Models\Category;
 use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Database\Eloquent\Model;
@@ -20,8 +21,8 @@ class ProductController extends Controller
     public function index()
     {
         $products = new Product();
-        $products = $products->with('stocks');
-        $products = $products->get();
+        $products = $products->with('stocks','category');
+        $products = $products->latest()->paginate(5);
 
         return response()->json([
             'message'  => 'success',
@@ -47,6 +48,7 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
+
         $product = new Product();
         $product->name = $request->name;
         $product->image_id = $request->image_id ;
@@ -61,8 +63,12 @@ class ProductController extends Controller
         $stock->product_id = $product->count() ;
         $stock->save();
 
+        $categorys = new Category();
+        $category = $categorys->find($request->category_id);
+
         $data['product'] = $product;
         $data['stock']   = $stock;
+        $data['category'] = $category;
 
         return response()->json([
             'message' => 'success',
@@ -79,7 +85,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $products = new Product();
-        $products = $products->with('stocks');
+        $products = $products->with('stocks','category');
         $products = $products->get();
         $product = $products->find($product->id);
 
@@ -109,6 +115,7 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product)
     {
+
         $product->name = $request->name;
         $product->image_id = $request->image_id ;
         $product->description = $request->description;
