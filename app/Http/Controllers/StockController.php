@@ -15,7 +15,12 @@ class StockController extends Controller
      */
     public function index()
     {
-        //
+        $stocks = Stock::all();
+
+        return response()->json([
+            'message' => 'success',
+            'data'    => $stocks
+        ]);
     }
 
     /**

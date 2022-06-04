@@ -6,10 +6,12 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\Stock;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +19,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = new Product();
+        $products = $products->with('stocks');
+        $products = $products->get();
 
         return response()->json([
             'message'  => 'success',
@@ -43,25 +47,26 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request)
     {
-
         $product = new Product();
         $product->name = $request->name;
         $product->image_id = $request->image_id ;
         $product->description = $request->description;
-        $product->stock_id = $request->stock_id ;
         $product->category_id = $request->category_id;
         $product->user_id = Auth::user()->id;
         $product->save();
 
+        $stock = new Stock();
+        $stock->price = $request->price;
+        $stock->stock_total = $request->stock_total;
+        $stock->product_id = $product->count() ;
+        $stock->save();
 
-//        $stock = new Stock();
-//        $stock->price = $request->price;
-//        $stock->stock_total = $request->stock_total;
-//        $stock->product_id = 1 ;
+        $data['product'] = $product;
+        $data['stock']   = $stock;
 
         return response()->json([
             'message' => 'success',
-            'data'    => $product
+            'data'    => $data
         ]);
     }
 
@@ -73,6 +78,11 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
+        $products = new Product();
+        $products = $products->with('stocks');
+        $products = $products->get();
+        $product = $products->find($product->id);
+
         return response()->json([
             'message'  =>  'success',
             'data'     => $product
@@ -102,7 +112,6 @@ class ProductController extends Controller
         $product->name = $request->name;
         $product->image_id = $request->image_id ;
         $product->description = $request->description;
-        $product->stock_id = $request->stock_id ;
         $product->category_id = $request->category_id;
         $product->user_id = Auth::user()->id;
         $product->update();

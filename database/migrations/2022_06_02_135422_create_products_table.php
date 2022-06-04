@@ -18,7 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('image_id');
             $table->longText('description');
-            $table->bigInteger('stock_id');
             $table->bigInteger('category_id');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
