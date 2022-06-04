@@ -9,6 +9,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
+use App\Http\Controllers\PhotoController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -25,5 +26,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('stock',StockController::class);
     Route::apiResource('order',OrderController::class);
     Route::apiResource('order_status',OrderStatusController::class);
+    Route::apiResource('photo',PhotoController::class);
 });
 
