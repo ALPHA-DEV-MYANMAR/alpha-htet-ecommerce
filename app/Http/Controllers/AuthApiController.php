@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 class AuthApiController extends Controller
 {
     public function register(Request $request){
+
         $credentials = $request->validate([
             'name' => 'required|unique:users,name|max:225',
             'email' => 'required|unique:users,email|min:3',
@@ -65,4 +66,24 @@ class AuthApiController extends Controller
             'message'=> 'Successfully logged out'
         ]);
     }
+
+    public function index(){
+        $users = User::with('roles')->get();
+        return response()->json([
+            'message' => 'success',
+            'data'    => $users
+        ]);
+    }
+
+    public function show($id){
+        $user = User::find($id);
+
+        $user['roles'] = $user->roles;
+
+        return response()->json([
+            'message' => 'success',
+            'data'    => $user
+        ]);
+    }
+
 }

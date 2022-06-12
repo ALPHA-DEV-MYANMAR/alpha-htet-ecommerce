@@ -21,7 +21,7 @@ Route::post('register',[AuthApiController::class,'register']);
 Route::post('login',[AuthApiController::class,'login']);
 Route::post('logout',[AuthApiController::class,'logout'])->middleware('auth:sanctum');//Don't Forget sanctum in logout//
 
-Route::middleware('auth:sanctum')->group(function (){
+Route::middleware(['auth:sanctum','isAdmin'])->group(function (){
     Route::apiResource('category',CategoryController::class);
     Route::apiResource('product',ProductController::class);
     Route::apiResource('stock',StockController::class);
@@ -29,5 +29,7 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::apiResource('order_status',OrderStatusController::class);
     Route::apiResource('photo',PhotoController::class);
     Route::apiResource('cart',CartController::class);
+    Route::get('user',[AuthApiController::class,'index']);
+    Route::get('user/{id}',[AuthApiController::class,'show']);
 });
 
