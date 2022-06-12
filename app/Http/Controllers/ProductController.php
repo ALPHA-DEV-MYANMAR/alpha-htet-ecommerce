@@ -54,6 +54,7 @@ class ProductController extends Controller
         $product->image_id = $request->image_id ;
         $product->description = $request->description;
         $product->category_id = $request->category_id;
+        $product->stock_id = Stock::all()->count()+1;
         $product->user_id = Auth::user()->id;
         $product->save();
 
