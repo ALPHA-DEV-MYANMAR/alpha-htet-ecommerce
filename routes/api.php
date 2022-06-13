@@ -9,8 +9,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
-use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\RoleController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -25,11 +25,14 @@ Route::middleware(['auth:sanctum','isAdmin'])->group(function (){
     Route::apiResource('category',CategoryController::class);
     Route::apiResource('product',ProductController::class);
     Route::apiResource('stock',StockController::class);
-    Route::apiResource('order',OrderController::class);
     Route::apiResource('order_status',OrderStatusController::class);
-    Route::apiResource('photo',PhotoController::class);
+    Route::get('users',[AuthApiController::class,'index']);
+});
+
+Route::middleware('auth:sanctum')->group(function (){
+    Route::get('user',[AuthApiController::class,'show']);
+    Route::put('user',[AuthApiController::class,'update']);
+    Route::apiResource('order',OrderController::class);
     Route::apiResource('cart',CartController::class);
-    Route::get('user',[AuthApiController::class,'index']);
-    Route::get('user/{id}',[AuthApiController::class,'show']);
 });
 

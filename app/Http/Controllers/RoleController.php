@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
 use App\Models\Role;
+use App\Models\RoleUser;
 
 class RoleController extends Controller
 {
@@ -36,7 +37,7 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+
     }
 
     /**

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\GuardHelpers;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +25,7 @@ class AuthApiController extends Controller
         $user->email = $request->email;
         $user->password = \Hash::make($request->password);
         $user->save();
+        $user->roles()->attach(2);
 
         if(!$credentials) {
             return response()->json([
@@ -75,15 +78,45 @@ class AuthApiController extends Controller
         ]);
     }
 
-    public function show($id){
-        $user = User::find($id);
-
+    public function show(){
+        $user = Auth::user();
         $user['roles'] = $user->roles;
-
         return response()->json([
             'message' => 'success',
             'data'    => $user
         ]);
     }
 
+    public function update(Request $request){
+
+        $credentials = $request->validate([
+            'name' => 'required|unique:users,name,'.Auth::user()->id.'|max:255',
+            'email' => 'required|email|unique:users,email,'.Auth::user()->id.'|min:3',
+            'role_id' => 'required|integer|exists:roles,id'
+        ]);
+
+        $user = User::find(auth()->id());
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->update();
+        $user->roles()->detach();
+        $user->roles()->attach($request->role_id);
+        $user['roles'] = $user->roles;
+
+        if(!$credentials) {
+            return response()->json([
+                'message' => 'failed',
+                'data' => 'user update failed'
+            ],422);
+        }
+
+        $token = $user->createToken('auth-user')->plainTextToken;
+
+        return response()->json([
+            'message' => 'success',
+            'data' => $user,
+            'token' => $token
+        ],200);
+
+    }
 }
