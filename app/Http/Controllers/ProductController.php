@@ -22,7 +22,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = new Product();
-        $products = $products->with('stocks','category');
+        $products = $products->with('stocks','category','photo');
         $products = $products->latest()->paginate(5);
 
         return response()->json([
@@ -52,7 +52,7 @@ class ProductController extends Controller
 
         $product = new Product();
         $product->name = $request->name;
-        $product->image_id = $request->image_id ;
+        $product->photo_id = $request->photo_id ;
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->stock_id = Stock::all()->count()+1;
@@ -87,7 +87,7 @@ class ProductController extends Controller
     public function show(Product $product)
     {
         $products = new Product();
-        $products = $products->with('stocks','category');
+        $products = $products->with('stocks','category','photo');
         $products = $products->get();
         $product = $products->find($product->id);
 
@@ -119,7 +119,7 @@ class ProductController extends Controller
     {
 
         $product->name = $request->name;
-        $product->image_id = $request->image_id ;
+        $product->photo_id = $request->photo_id ;
         $product->description = $request->description;
         $product->category_id = $request->category_id;
         $product->user_id = Auth::user()->id;

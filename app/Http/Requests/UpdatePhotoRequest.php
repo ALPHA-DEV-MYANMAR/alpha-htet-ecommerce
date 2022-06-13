@@ -24,7 +24,7 @@ class UpdatePhotoRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'path' => 'nullable|file|mimes:jpg,png'
         ];
     }
 }

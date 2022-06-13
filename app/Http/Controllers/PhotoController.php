@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePhotoRequest;
 use App\Http\Requests\UpdatePhotoRequest;
 use App\Models\Photo;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 
@@ -75,9 +76,15 @@ class PhotoController extends Controller
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
      */
-    public function show(Photo $photo)
+    public function show(Photo $photo,$id)
     {
-        //
+        $photo = Photo::find($id);
+
+        return response()->json([
+            'message' => 'success',
+            'data'    => $photo
+        ]);
+
     }
 
     /**
@@ -98,9 +105,29 @@ class PhotoController extends Controller
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePhotoRequest $request, Photo $photo)
+    public function update(UpdatePhotoRequest $request, Photo $photo,$id)
     {
-//
+
+
+        if($request->hasFile('path')){
+            $photo = $request->file('path');
+            $newName = uniqid().'_photo.'.$photo->extension();
+            $photo->storeAs('public/photos',$newName);
+            $img = Image::make($photo);
+            $img->fit('500','500');
+            $img->save('storage/thumbnail/'.$newName);
+            $url = asset('storage/thumbnail/'.$newName);
+            $photo = Photo::find($id);
+            $photo->path = $url;
+            $photo->update();
+        }
+
+        return response()->json([
+            'message' => 'success',
+            'data'    => $photo
+        ]);
+
+
     }
 
     /**
@@ -109,8 +136,10 @@ class PhotoController extends Controller
      * @param  \App\Models\Photo  $photo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Photo $photo)
+    public function destroy(Photo $photo,$id)
     {
+
+        $photo = Photo::find($id);
         $photo->delete();
 
         return response()->json([
