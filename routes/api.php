@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderStatusController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\PhotoController;
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
@@ -34,5 +35,6 @@ Route::middleware('auth:sanctum')->group(function (){
     Route::put('user',[AuthApiController::class,'update']);
     Route::apiResource('order',OrderController::class);
     Route::apiResource('cart',CartController::class);
+    Route::apiResource('image',PhotoController::class);
 });
 
