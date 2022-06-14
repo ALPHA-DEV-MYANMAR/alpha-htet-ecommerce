@@ -22,6 +22,7 @@ class ContactController extends Controller
      */
     public function index()
     {
+        return 'Hello World';
        $contact = Contact::latest()->where('user_id',\Auth::user()->id)->get();
         return response()->json([
             'message' => 'success',
@@ -60,7 +61,7 @@ class ContactController extends Controller
                 'message' => 'This is not your data'
             ],403);
         }
-        
+
         return response()->json([
             'message' => 'success',
             $contact],200);
